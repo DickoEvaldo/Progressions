@@ -1,11 +1,14 @@
-import * as React from "react";
-import { SVGProps } from "react";
-const Logo = (props: SVGProps<SVGSVGElement>) => (
+interface LogoProps extends SVGProps<SVGSVGElement> {
+  className?: string;
+}
+
+const Logo: React.FC<LogoProps> = ({ className, ...props }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
     width={40}
     height={40}
+    className={className}
     fill="none"
     {...props}
   >
