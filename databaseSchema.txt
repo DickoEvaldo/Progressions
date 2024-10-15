@@ -1,15 +1,15 @@
 Table Users {
   id string [primary key]
   name string
-  program string
-  coursesCompleted course [ref: < Courses.courseId]
-  degree string [ref: - Degrees.id]
-  interest string [ref: - Interests.id]
+  email string
+  password string
+  program string [ref: - Degrees.id]
+  interests string [ref: - Interests.id]
 }
 
 Table Degrees {
   id string [primary key]
-  pathway string [ref: - Pathways.id]
+  pathways string [ref: < Pathways.id]
   name string
   details string
 }
@@ -18,36 +18,44 @@ Table Pathways {
   id string [primary key]
   name string
   details string
-  compulsory Courses [ref: < Courses.courseId]
-  recommended Courses [ref: < Courses.courseId]
+  compulsory string [ref: < Courses.courseId]
+  recommended string [ref: < Courses.courseId]
 }
 
 Table Interests {
   id string [primary key]
   name string
   details string
-  recommended Courses [ref: < Courses.courseId]
+  recommended string [ref: < Courses.courseId]
+}
+
+Table CompletedCourses {
+  userId string [ref: > Users.id]
+  course string [ref: < Courses.courseId]
 }
 
 Table Roadmap {
   userId string [ref: < Users.id]
-  terms Term [ref: < Term.id]
+  terms string [ref: < Term.id]
 }
 
 Table Term {
   id string
   year integer
   term integer
-  courses Course [ref: < Courses.courseId]
+  courses string [ref: < Courses.courseId]
 }
 
 Table Courses {
   courseId string [primary key]
-  preReq Courses [ref: < Courses.courseId]
-  reqFor Courses [ref: < Courses.courseId]
   code string
   name string
   year integer
   term integer
   details string
+}
+
+Table Requisites {
+  courseId string [ref: <> Courses.courseId]
+  preReq string [ref: <> Courses.courseId]
 }
