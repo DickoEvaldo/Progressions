@@ -13,7 +13,15 @@ const config: Config = {
       colors: {
         background: '#FFFFFF',
         'dark-button': '#51B2C6',
-        'light-button': '#DCF0F4',
+        'light-button': {
+          DEFAULT: '#3FC1FD',
+          'gradient-start': '#88D9FF',
+          'gradient-end': '#3FC1FD',
+        },
+        'gradient-text': {
+          'start': '#88D9FF',
+          'end': '#3FC1FD',
+        },
         'light-text': '#FFFFFF',
         'dark-text': '#51B2C6',
         'yellow-border': '#FFC54B',
@@ -21,6 +29,10 @@ const config: Config = {
         'blue-border': '#1CA7C6',
         'purple-border': '#B648C1',
         'orange-border': '#FC7D31',
+        backgroundImage: {
+          'light-button-gradient': 'linear-gradient(90deg, var(--tw-gradient-stops))',
+          'text-gradient': 'linear-gradient(90deg, var(--tw-gradient-stops))',
+        },
         // Keeping the original color definitions
         foreground: 'hsl(var(--foreground))',
         card: {
