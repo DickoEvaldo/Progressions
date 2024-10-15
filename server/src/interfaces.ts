@@ -33,7 +33,7 @@ export interface Course extends RowDataPacket {
   details: string;
 }
 
-export interface Requisite extends RowDataPacket {
+export interface PreReq extends RowDataPacket {
   courseId: string;
   preReq: string;
 }
@@ -49,17 +49,20 @@ export interface CourseDetails {
   details: string;
 }
 
-export interface Degree {
+export interface Degree extends RowDataPacket {
   id: string;
-  pathways: string[];
   name: string;
   details: string;
 }
 
-export interface Pathway {
+export interface Pathway extends RowDataPacket{
   id: string;
+  degree: string;
   name: string;
   details: string;
-  compulsory: string[];
-  recommended: string[];
+}
+
+export interface Requirement extends RowDataPacket {
+  pathway: string;
+  courseId: string;
 }

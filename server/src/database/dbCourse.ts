@@ -1,5 +1,18 @@
-import { Course, CourseDetails, Requisite } from "../interfaces";
+import { Course, CourseDetails, PreReq } from "../interfaces";
 import { connection } from "./database";
+
+export const getCourses = async (courseId: string): Promise<Course[]> => {
+  return new Promise((resolve, reject) => {
+    connection.query<Course[]>(
+      "SELECT * FROM Courses",
+      [courseId],
+      (err, res) => {
+        if (err) reject(err)
+        else resolve(res)
+      }
+    )
+  })
+}
 
 export const getCourse = async (courseId: string): Promise<Course> => {
   return new Promise((resolve, reject) => {
@@ -30,9 +43,9 @@ export const getCourseDetails = async (courseId: string): Promise<CourseDetails>
 }
 
 export const getPreReqs = async (courseId: string): Promise<string[]> => {
-  const preReqPacket: Requisite[] = await new Promise((resolve, reject) => {
-    connection.query<Requisite[]>(
-      "SELECT * FROM Requisites WHERE courseId = ?",
+  const preReqPacket: PreReq[] = await new Promise((resolve, reject) => {
+    connection.query<PreReq[]>(
+      "SELECT * FROM PreReqs WHERE courseId = ?",
       [courseId],
       (err, res) => {
         if (err) reject(err)
@@ -45,9 +58,9 @@ export const getPreReqs = async (courseId: string): Promise<string[]> => {
 }
 
 export const getReqs = async (courseId: string): Promise<string[]> => {
-  const preReqPacket: Requisite[] = await new Promise((resolve, reject) => {
-    connection.query<Requisite[]>(
-      "SELECT * FROM Requisites WHERE preReq = ?",
+  const preReqPacket: PreReq[] = await new Promise((resolve, reject) => {
+    connection.query<PreReq[]>(
+      "SELECT * FROM PreReqs WHERE preReq = ?",
       [courseId],
       (err, res) => {
         if (err) reject(err)
