@@ -31,7 +31,11 @@ const CourseCardMd = ({ name, difficulty, details }: CourseCardProps) => {
   return (
     <Dialog>
       <DialogTrigger className="w-full h-full">
-        <div className="px-12 py-8 border-course-b rounded-xl relative border h-[85%]">
+        <div className="px-4 py-8 border-course-b rounded-xl relative border h-[85%]">
+          <div
+            className="self-center justify-self-center w-full h-[50%] shadow-sm rounded-2xl"
+            style={{ backgroundColor: "#D9D9D9" }}
+          ></div>
           <p className="font-bold">{name}</p>
           <div
             className={`absolute top-2 left-2 ${getColors(
