@@ -90,21 +90,24 @@ const Page = () => {
               {buttons.map((button) => renderButton(button))}
             </div>
             {/* Scrollable div with fixed max height */}
-            <div className="overflow-y-auto max-h-96 mt-4">
-              <div className="flex flex-row gap-10 justify-around">
-                <div className="flex flex-col gap-4">
+            <div
+              className="overflow-y-auto mt-4 px-40"
+              style={{ height: "90%" }}
+            >
+              <div className="flex flex-row gap-10 justify-around h-full">
+                <div className="flex flex-col gap-4 h-full w-full">
                   <h1 className="text-center">Term 1</h1>
                   <CourseCardMd name="COMP3121" difficulty="hard" />
                   <CourseCardMd name="COMP3121" difficulty="hard" />
                   <CourseCardMd name="COMP3121" difficulty="hard" />
                 </div>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 h-full w-full">
                   <h1 className="text-center">Term 2</h1>
                   <CourseCardMd name="COMP3121" difficulty="hard" />
                   <CourseCardMd name="COMP3121" difficulty="hard" />
                   <CourseCardMd name="COMP3121" difficulty="hard" />
                 </div>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 h-full w-full">
                   <h1 className="text-center">Term 3</h1>
                   <CourseCardMd name="COMP3121" difficulty="hard" />
                   <CourseCardMd name="COMP3121" difficulty="hard" />
@@ -113,7 +116,7 @@ const Page = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col bg-white rounded-lg px-4 py-4 h-1/3 shadow-lg"></div>
+          {/* <div className="flex flex-col bg-white rounded-lg px-4 py-4 h-1/3 shadow-lg"></div> */}
         </div>
       </div>
     </div>
