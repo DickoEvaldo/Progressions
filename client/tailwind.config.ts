@@ -29,6 +29,11 @@ const config: Config = {
         'blue-border': '#1CA7C6',
         'purple-border': '#B648C1',
         'orange-border': '#FC7D31',
+        'medium-bg': '#FBBF24',
+        'hard-bg': '#F87171',
+        'easy-bg': '#34D399',
+        'course-b': '#A0ABBB',
+        'gray-text': '#64748B',
         backgroundImage: {
           'light-button-gradient': 'linear-gradient(90deg, var(--tw-gradient-stops))',
           'text-gradient': 'linear-gradient(90deg, var(--tw-gradient-stops))',
