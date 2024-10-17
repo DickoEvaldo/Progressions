@@ -1,23 +1,28 @@
 import React from "react";
-import { Popover } from "../ui/popover";
-import { PopoverContent } from "../ui/popover";
-import { PopoverTrigger } from "../ui/popover";
-
-import { Dialog } from "../ui/dialog";
-import { DialogContent } from "../ui/dialog";
-import { DialogHeader } from "../ui/dialog";
-import { DialogTitle } from "../ui/dialog";
-import { DialogTrigger } from "../ui/dialog";
-import { DialogDescription } from "../ui/dialog";
-import CourseCardSm from "./CourseCardSm";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogDescription,
+} from "../ui/dialog";
+import Difficulty from "./Difficulty";
+import CyberSvg from "../icon/CyberIcon";
+import BackEndSvg from "../icon/BackEndIcon";
+import DesignSvg from "../icon/DesignIcon";
+import FrontEndSvg from "../icon/FrontEndIcon";
+import EthicsSvg from "../icon/EthicsIcon";
+import SystemSvg from "../icon/SystemIcon";
 
 type CourseCardProps = {
   name: string;
   difficulty: string;
   details: string;
+  tag: string;
 };
 
-const CourseCardMd = ({ name, difficulty, details }: CourseCardProps) => {
+const CourseCardMd = ({ name, difficulty, details, tag }: CourseCardProps) => {
   const getColors = (difficulty: string) => {
     if (difficulty === "easy") {
       return "bg-easy-bg";
@@ -28,24 +33,44 @@ const CourseCardMd = ({ name, difficulty, details }: CourseCardProps) => {
     }
   };
 
+  const getSvg = (tag: string) => {
+    if (tag === "cyber") {
+      return <CyberSvg />;
+    } else if (tag === "backend") {
+      return <BackEndSvg />;
+    } else if (tag === "frontend") {
+      return <FrontEndSvg />;
+    } else if (tag === "design") {
+      return <DesignSvg />;
+    } else if (tag === "ethics") {
+      return <EthicsSvg />;
+    } else {
+      return <SystemSvg />;
+    }
+  };
+
+  const truncateDetails = (text: string, wordLimit: number) => {
+    const words = text.split(" ");
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(" ") + "...";
+    }
+    return text;
+  };
+
+  const truncatedDetails = truncateDetails(details, 10);
+
   return (
     <Dialog>
       <DialogTrigger className="w-full h-full">
-        <div className="px-4 py-8 border-course-b rounded-xl relative border h-[85%]">
-          <div
-            className="self-center justify-self-center w-full h-[50%] shadow-sm rounded-2xl"
-            style={{ backgroundColor: "#D9D9D9" }}
-          ></div>
-          <p className="font-bold">{name}</p>
-          <div
-            className={`absolute top-2 left-2 ${getColors(
-              difficulty
-            )} px-2 rounded-xl`}
-          >
-            <p className="font-bold" style={{ fontSize: 10 }}>
-              {difficulty}
-            </p>
+        <div className="px-4 flex flex-col py-8 border-course-b rounded-xl relative border h-[100%]">
+          <div className="flex justify-between">
+            <p className="font-bold">{name}</p>
+            <div>
+              <Difficulty difficulty={4} />
+            </div>
           </div>
+          <div className="mt-2 text-left text-sm">{truncatedDetails}</div>
+          <div className="mt-14 flex bottom-0">{getSvg(tag)}</div>
         </div>
       </DialogTrigger>
       <DialogContent>
@@ -74,7 +99,7 @@ const CourseCardMd = ({ name, difficulty, details }: CourseCardProps) => {
             practice. The course includes extensive practical work in labs and
             programming projects.
             <p className="text-sm text-gray-text mt-4 font-semibold">
-              Similiar Courses:
+              Similar Courses:
             </p>
             <p>COMP2521, COMP4128</p>
           </DialogDescription>

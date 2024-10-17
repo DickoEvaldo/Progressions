@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import CourseCardMd from "../components/self/CourseCardMd";
 import CourseCardSm from "../components/self/CourseCardSm";
+import CoursesPerYear from "../components/self/CoursesPerYear";
 
 const Page = () => {
   type Button = {
@@ -9,29 +10,216 @@ const Page = () => {
     name: string;
     highlight: boolean;
   };
+  const placeholderDetails =
+    "An introduction to problem-solving via programming, which aims to have students develop proficiency in using a high level programming language. Topics: algorithms, program structures (statements, sequence, selection, iteration, functions), data types (numeric, character), data structures (arrays, tuples, pointers, lists), storage structures (memory, addresses), introduction to analysis of algorithms, testing, code quality, teamwork, and reflective practice. The course includes extensive practical work in labs and programming projects.";
+
+  // Courses with year property
+  const coursesThisYear = {
+    termOne: [
+      {
+        name: "COMP3121",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "algos",
+        year: 1,
+      },
+      {
+        name: "COMP6841",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "cyber",
+        year: 1,
+      },
+      {
+        name: "CDEV3000",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "gened",
+        year: 1,
+      },
+      {
+        name: "COMP2011",
+        difficulty: "medium",
+        details: placeholderDetails,
+        tag: "datastructures",
+        year: 2,
+      },
+      {
+        name: "COMP2021",
+        difficulty: "medium",
+        details: placeholderDetails,
+        tag: "theory",
+        year: 2,
+      },
+      {
+        name: "MATH2501",
+        difficulty: "medium",
+        details: placeholderDetails,
+        tag: "math",
+        year: 2,
+      },
+      {
+        name: "COMP3011",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "AI",
+        year: 3,
+      },
+      {
+        name: "COMP3021",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "ML",
+        year: 3,
+      },
+      {
+        name: "COMP3501",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "networks",
+        year: 3,
+      },
+    ],
+    termTwo: [
+      {
+        name: "COMP3121",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "algos",
+        year: 1,
+      },
+      {
+        name: "COMP6841",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "cyber",
+        year: 1,
+      },
+      {
+        name: "CDEV3000",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "gened",
+        year: 1,
+      },
+      {
+        name: "COMP2012",
+        difficulty: "medium",
+        details: placeholderDetails,
+        tag: "webdev",
+        year: 2,
+      },
+      {
+        name: "COMP2022",
+        difficulty: "medium",
+        details: placeholderDetails,
+        tag: "OOP",
+        year: 2,
+      },
+      {
+        name: "MATH2502",
+        difficulty: "medium",
+        details: placeholderDetails,
+        tag: "math",
+        year: 2,
+      },
+      {
+        name: "COMP3012",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "security",
+        year: 3,
+      },
+      {
+        name: "COMP3022",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "NLP",
+        year: 3,
+      },
+      {
+        name: "COMP3502",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "networks",
+        year: 3,
+      },
+    ],
+    termThree: [
+      {
+        name: "COMP3121",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "algos",
+        year: 1,
+      },
+      {
+        name: "COMP6841",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "cyber",
+        year: 1,
+      },
+      {
+        name: "CDEV3000",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "gened",
+        year: 1,
+      },
+      {
+        name: "COMP2013",
+        difficulty: "medium",
+        details: placeholderDetails,
+        tag: "database",
+        year: 2,
+      },
+      {
+        name: "COMP2023",
+        difficulty: "medium",
+        details: placeholderDetails,
+        tag: "OS",
+        year: 2,
+      },
+      {
+        name: "MATH2503",
+        difficulty: "medium",
+        details: placeholderDetails,
+        tag: "math",
+        year: 2,
+      },
+      {
+        name: "COMP3013",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "cloud",
+        year: 3,
+      },
+      {
+        name: "COMP3023",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "bigdata",
+        year: 3,
+      },
+      {
+        name: "COMP3503",
+        difficulty: "hard",
+        details: placeholderDetails,
+        tag: "networks",
+        year: 3,
+      },
+    ],
+  };
 
   const [buttons, setButtons] = useState<Button[]>([
-    {
-      id: 0,
-      name: "All",
-      highlight: true,
-    },
-    {
-      id: 1,
-      name: "Year 1",
-      highlight: false,
-    },
-    {
-      id: 2,
-      name: "Year 2",
-      highlight: false,
-    },
-    {
-      id: 3,
-      name: "Year 3",
-      highlight: false,
-    },
+    { id: 0, name: "All", highlight: true },
+    { id: 1, name: "Year 1", highlight: false },
+    { id: 2, name: "Year 2", highlight: false },
+    { id: 3, name: "Year 3", highlight: false },
   ]);
+
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
   const handleButtonClick = (buttonId: number) => {
     setButtons((prevButtons) =>
@@ -40,11 +228,13 @@ const Page = () => {
         highlight: button.id === buttonId,
       }))
     );
+    setSelectedYear(buttonId === 0 ? null : buttonId); // null for "All"
   };
 
   const renderButton = (button: Button) => {
     return (
       <div
+        key={button.id}
         className={`px-4 py-1 rounded-2xl ${
           button.highlight
             ? "bg-light-button text-white"
@@ -89,34 +279,11 @@ const Page = () => {
             <div className="flex flex-row gap-4 justify-center text-md">
               {buttons.map((button) => renderButton(button))}
             </div>
-            {/* Scrollable div with fixed max height */}
-            <div
-              className="overflow-y-auto mt-4 px-40"
-              style={{ height: "90%" }}
-            >
-              <div className="flex flex-row gap-10 justify-around h-full">
-                <div className="flex flex-col gap-4 h-full w-full">
-                  <h1 className="text-center">Term 1</h1>
-                  <CourseCardMd name="COMP3121" difficulty="hard" />
-                  <CourseCardMd name="COMP3121" difficulty="hard" />
-                  <CourseCardMd name="COMP3121" difficulty="hard" />
-                </div>
-                <div className="flex flex-col gap-4 h-full w-full">
-                  <h1 className="text-center">Term 2</h1>
-                  <CourseCardMd name="COMP3121" difficulty="hard" />
-                  <CourseCardMd name="COMP3121" difficulty="hard" />
-                  <CourseCardMd name="COMP3121" difficulty="hard" />
-                </div>
-                <div className="flex flex-col gap-4 h-full w-full">
-                  <h1 className="text-center">Term 3</h1>
-                  <CourseCardMd name="COMP3121" difficulty="hard" />
-                  <CourseCardMd name="COMP3121" difficulty="hard" />
-                  <CourseCardMd name="COMP3121" difficulty="hard" />
-                </div>
-              </div>
-            </div>
+            <CoursesPerYear
+              coursesThisYear={coursesThisYear}
+              selectedYear={selectedYear}
+            />
           </div>
-          {/* <div className="flex flex-col bg-white rounded-lg px-4 py-4 h-1/3 shadow-lg"></div> */}
         </div>
       </div>
     </div>
