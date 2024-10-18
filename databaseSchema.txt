@@ -1,0 +1,61 @@
+Table Users {
+  id string [primary key]
+  name string
+  email string
+  password string
+  program string [ref: - Degrees.id]
+  interests string [ref: - Interests.id]
+}
+
+Table Degrees {
+  id string [primary key]
+  pathways string [ref: < Pathways.id]
+  name string
+  details string
+}
+
+Table Pathways {
+  id string [primary key]
+  name string
+  details string
+  compulsory string [ref: < Courses.courseId]
+  recommended string [ref: < Courses.courseId]
+}
+
+Table Interests {
+  id string [primary key]
+  name string
+  details string
+  recommended string [ref: < Courses.courseId]
+}
+
+Table CompletedCourses {
+  userId string [ref: > Users.id]
+  course string [ref: < Courses.courseId]
+}
+
+Table Roadmap {
+  userId string [ref: < Users.id]
+  terms string [ref: < Term.id]
+}
+
+Table Term {
+  id string
+  year integer
+  term integer
+  courses string [ref: < Courses.courseId]
+}
+
+Table Courses {
+  courseId string [primary key]
+  code string
+  name string
+  year integer
+  term integer
+  details string
+}
+
+Table Requisites {
+  courseId string [ref: <> Courses.courseId]
+  preReq string [ref: <> Courses.courseId]
+}
