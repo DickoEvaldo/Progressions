@@ -1,3 +1,4 @@
+import { RowDataPacket } from "mysql2";
 import { Course, CourseDetails, PreReq } from "../interfaces";
 import { connection } from "./database";
 
@@ -26,23 +27,26 @@ export const getCourse = async (courseId: string): Promise<Course> => {
     )
   })
 }
-
+interface TermAvailable extends RowDataPacket {
+  term: string
+}
 export const getCourseDetails = async (courseId: string): Promise<CourseDetails> => {
   const course: Course = await getCourse(courseId);
-  const terms: string[] = await new Promise((resolve, reject) => {
-    connection.query<string[]>(
-      "SELECT CONCAT(SELECT term FROM CourseTerms WHERE courseId = ?) AS `terms`",
+  const terms: TermAvailable[] = await new Promise((resolve, reject) => {
+    connection.query<TermAvailable[]>(
+      "SELECT term FROM CourseTerms WHERE courseId = ?",
       [courseId],
       (err, res) => {
         if (err) reject(err)
-        else resolve(res?.[0].terms)
+        else resolve(res)
       }
     )
   })
+  const strterms = terms.map((term) => term.term);
   const courseDets: CourseDetails = {
     courseId: course.courseId,
     name: course.name,
-    terms: terms,
+    terms: strterms,
     details: course.details,
     preReqs: await getPreReqs(courseId),
     reqFor: await getReqs(courseId),
