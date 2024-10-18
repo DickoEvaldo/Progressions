@@ -1,11 +1,11 @@
 import { Course, CourseDetails, PreReq } from "../interfaces";
 import { connection } from "./database";
 
-export const getCourses = async (courseId: string): Promise<Course[]> => {
+export const getAllCourses = async (): Promise<Course[]> => {
   return new Promise((resolve, reject) => {
     connection.query<Course[]>(
       "SELECT * FROM Courses",
-      [courseId],
+      [],
       (err, res) => {
         if (err) reject(err)
         else resolve(res)
@@ -29,12 +29,20 @@ export const getCourse = async (courseId: string): Promise<Course> => {
 
 export const getCourseDetails = async (courseId: string): Promise<CourseDetails> => {
   const course: Course = await getCourse(courseId);
+  const terms: string[] = await new Promise((resolve, reject) => {
+    connection.query<string[]>(
+      "SELECT CONCAT(SELECT term FROM CourseTerms WHERE courseId = ?) AS `terms`",
+      [courseId],
+      (err, res) => {
+        if (err) reject(err)
+        else resolve(res?.[0].terms)
+      }
+    )
+  })
   const courseDets: CourseDetails = {
     courseId: course.courseId,
-    code: course.code,
     name: course.name,
-    year: course.year,
-    term: course.term,
+    terms: terms,
     details: course.details,
     preReqs: await getPreReqs(courseId),
     reqFor: await getReqs(courseId),

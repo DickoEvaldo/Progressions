@@ -4,17 +4,17 @@ export interface User extends RowDataPacket {
   id: string;
   name: string;
   email: string;
-  program: string;
+  degree: string;
 }
 
 export interface UserDetails {
   id: string;
   name: string;
   email: string;
-  program: string;
+  degree: string;
+  interest: string;
   roadmap: Map<string, Term>;
   completedCourses: string[];
-  interests: string[];
 }
 
 export interface Term {
@@ -26,10 +26,7 @@ export interface Term {
 
 export interface Course extends RowDataPacket {
   courseId: string;
-  code: string;
   name: string;
-  year: number;
-  term: number;
   details: string;
 }
 
@@ -42,10 +39,8 @@ export interface CourseDetails {
   courseId: string;
   preReqs: string[];
   reqFor: string[]
-  code: string;
   name: string;
-  year: number;
-  term: number;
+  terms: string[];
   details: string;
 }
 

@@ -27,7 +27,20 @@ export const getDegree = async (degree: string): Promise<Degree> => {
   })
 }
 
-export const getPathways = async (degree: string): Promise<Pathway[]> => {
+export const getPathways = async (): Promise<Pathway[]> => {
+  return new Promise((resolve, reject) => {
+    connection.query<Pathway[]>(
+      "SELECT * FROM Pathways",
+      [],
+      (err, res) => {
+        if (err) reject(err)
+        else resolve(res)
+      }
+    )
+  })
+}
+
+export const getDegreePathways = async (degree: string): Promise<Pathway[]> => {
   return new Promise((resolve, reject) => {
     connection.query<Pathway[]>(
       "SELECT * FROM Pathways WHERE degree = ?",
@@ -53,10 +66,10 @@ export const getPathway = async (pathway: string): Promise<Pathway> => {
   })
 }
 
-export const getRequirements = async (pathway: string): Promise<string[]> => {
+export const getCompulsory = async (pathway: string): Promise<string[]> => {
   const reqPacket: Requirement[] = await new Promise((resolve, reject) => {
     connection.query<Requirement[]>(
-      "SELECT * FROM Compulsory WHERE pathway = ?",
+      "SELECT courseId FROM Compulsory WHERE Compulsory.pathway = ?",
       [pathway],
       (err, res) => {
         if (err) reject(err)
@@ -71,7 +84,7 @@ export const getRequirements = async (pathway: string): Promise<string[]> => {
 export const getRecommended = async (pathway: string): Promise<string[]> => {
   const reqPacket: Requirement[] = await new Promise((resolve, reject) => {
     connection.query<Requirement[]>(
-      "SELECT * FROM Recommended WHERE pathway = ?",
+      "SELECT courseId FROM Recommended WHERE Recommended.pathway = ?",
       [pathway],
       (err, res) => {
         if (err) reject(err)
