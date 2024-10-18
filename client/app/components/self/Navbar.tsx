@@ -9,17 +9,6 @@ const Navbar = () => {
   const router = useRouter();
 
   return (
-<<<<<<< HEAD
-    <div className="top-0 py-4">
-      <div className="flex flex-row items-center justify-center px-8">
-        <Link href={"/"} className="cursor-pointer mr-auto">
-          <Logo />
-        </Link>
-        <div className="flex gap-8 text-sm cursor-pointer">
-          <Link href={"/dashboard"}>Dashboard</Link>
-          <Link href={"/roadmap"}>Community Roadmaps</Link>
-          <Link href={"/learning"}>Recommended Learning</Link>
-=======
     <div className="top-0 py-4 w-full bg-white ">
       <div className=" mx-auto flex justify-between items-center px-6 md:px-12">
         {/* Left Section: Logo */}
@@ -27,7 +16,6 @@ const Navbar = () => {
           <Link href="/" className="cursor-pointer">
             <Logo />
           </Link>
->>>>>>> d37a0a0f504364e70be6abe22bdaec78ab0c25ca
         </div>
 
         {/* Center Section: Links */}
@@ -36,7 +24,10 @@ const Navbar = () => {
             Dashboard
           </Link>
           <Link href="/roadmap" className="hover:underline">
-            Roadmap
+            Community Roadmaps
+          </Link>
+          <Link href="/learning" className="hover:underline">
+            Recommended Learnings
           </Link>
         </div>
 
