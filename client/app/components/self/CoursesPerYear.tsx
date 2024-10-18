@@ -12,6 +12,7 @@ type Course = {
   tag: string;
   year: number;
   term: string;
+  workload: number;
 };
 
 type CoursesPerYearProps = {
@@ -98,6 +99,7 @@ const CoursesPerYear = ({
           difficulty={course.difficulty}
           details={course.details}
           tag={course.tag}
+          workload={course.workload}
         />
       </div>
     ));

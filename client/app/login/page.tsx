@@ -14,22 +14,32 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "../components/ui/button";
 import { useRouter } from "next/navigation";
+import { userStore } from "../zustand/userStore";
 
 const Login = () => {
+  const { setRegister } = userStore();
+  const router = useRouter();
+
   const schema = z.object({
     email: z.string().min(1, "Email is required"),
     password: z.string().min(1, "Password is required"),
   });
 
-  const router = useRouter();
-  const form = useForm({
+  type FormData = z.infer<typeof schema>;
+
+  const form = useForm<FormData>({
     resolver: zodResolver(schema),
     mode: "onTouched",
     defaultValues: {
       email: "",
       password: "",
     },
-    shouldUseNativeValidation: true,
+  });
+
+  const handleSubmit = form.handleSubmit((data: FormData) => {
+    console.log("Form submitted", data);
+    setRegister(data.email, data.email, data.password);
+    router.push("/pathways");
   });
 
   return (
@@ -37,9 +47,9 @@ const Login = () => {
       <div className="items-center justify-center w-full">
         <h1 className="text-5xl font-semibold text-center">Log In</h1>
       </div>
-
       <Form {...form}>
         <form
+          onSubmit={handleSubmit}
           className="self-center justify-self-center space-y-6 bg-white p-6"
           style={{ width: 516 }}
         >
@@ -48,14 +58,12 @@ const Login = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-normal text-gray-700">
-                  Email Address
-                </FormLabel>
+                <FormLabel className="font-normal text-gray-700">zid</FormLabel>
                 <FormControl>
                   <Input
                     className="border-gray-300 focus:ring focus:ring-blue-500"
                     style={{ height: 53 }}
-                    placeholder="Enter your email address."
+                    placeholder="Enter your zid."
                     {...field}
                     type="text"
                   />
@@ -64,7 +72,6 @@ const Login = () => {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="password"
@@ -86,8 +93,8 @@ const Login = () => {
               </FormItem>
             )}
           />
-
           <Button
+            type="submit"
             className="w-full rounded-xl font-semibold bg-light-button"
             style={{ height: 53 }}
           >

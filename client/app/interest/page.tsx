@@ -8,6 +8,8 @@ import psychology from "../assets/psychology.jpg";
 import infosys from "../assets/infosys.jpg";
 import marketing from "../assets/marketing.jpg";
 import Image, { StaticImageData } from "next/image";
+import axios from "axios";
+import { userStore } from "../zustand/userStore";
 
 const courseData = [
   { id: "Mathematics", code: "", image: math },
@@ -68,6 +70,25 @@ const Page = () => {
     setSelectedCourse(id); // Update selected course
   };
 
+  const { name, email, password, program, interest, setToken } = userStore();
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post("http://10.147.20.154:3000/register", {
+        name: name,
+        email: email,
+        password: password,
+        program: program,
+        interest: interest,
+      });
+      console.log(response.data.token);
+      setToken(response.data.token);
+      router.push("/dashboard");
+    } catch (err) {
+      console.error("Registration failed:", err);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-center text-5xl font-bold mb-12">
@@ -111,7 +132,7 @@ const Page = () => {
           Start Course
         </Button>
         <Button
-          onClick={() => router.push("/dashboard")}
+          onClick={handleSubmit}
           className="text-md font-[525] bg-gray-300 border-[1.5px] border-gray-300 text-gray-700 px-8 py-5 rounded-[10px] hover:text-white"
         >
           Skip for now

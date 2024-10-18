@@ -4,8 +4,10 @@ import React from "react";
 import Logo from "../icon/Logo";
 import { buttonVariants, Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { userStore } from "@/app/zustand/userStore";
 
 const Navbar = () => {
+  const { token } = userStore();
   const router = useRouter();
 
   return (
@@ -33,18 +35,22 @@ const Navbar = () => {
 
         {/* Right Section: Buttons */}
         <div className="flex gap-4 items-center">
-          <Link
-            href="/login"
-            className={buttonVariants({ variant: "outline" })}
-          >
-            Login
-          </Link>
-          <Button
-            onClick={() => router.push("/register")}
-            className="bg-light-button"
-          >
-            Get Started Now
-          </Button>
+          {!token && (
+            <>
+              <Link
+                href="/login"
+                className={buttonVariants({ variant: "outline" })}
+              >
+                Login
+              </Link>
+              <Button
+                onClick={() => router.push("/register")}
+                className="bg-light-button"
+              >
+                Get Started Now
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

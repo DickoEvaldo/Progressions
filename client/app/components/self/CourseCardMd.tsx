@@ -20,10 +20,17 @@ type CourseCardProps = {
   difficulty: string;
   details: string;
   tag: string;
+  workload: string; // Added this as it was used but not in the type definition
 };
 
-const CourseCardMd = ({ name, difficulty, details, tag }: CourseCardProps) => {
-  const getColors = (difficulty) => {
+const CourseCardMd = ({
+  name,
+  difficulty,
+  details,
+  tag,
+  workload,
+}: CourseCardProps) => {
+  const getColors = (difficulty: string) => {
     switch (difficulty) {
       case "easy":
         return "bg-easy-bg text-green-700";
@@ -36,7 +43,7 @@ const CourseCardMd = ({ name, difficulty, details, tag }: CourseCardProps) => {
     }
   };
 
-  const getSvg = (tag) => {
+  const getSvg = (tag: string) => {
     switch (tag) {
       case "cyber":
         return <CyberSvg />;
@@ -53,11 +60,9 @@ const CourseCardMd = ({ name, difficulty, details, tag }: CourseCardProps) => {
     }
   };
 
-  const truncateDetails = (text, wordLimit) => {
-    const words = text.split(" ");
-    return words.length > wordLimit
-      ? words.slice(0, wordLimit).join(" ") + "..."
-      : text;
+  const truncateDetails = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength).trim() + "...";
   };
 
   return (
@@ -66,10 +71,10 @@ const CourseCardMd = ({ name, difficulty, details, tag }: CourseCardProps) => {
         <div className="px-4 py-6 flex flex-col border-course-b rounded-xl shadow-lg hover:shadow-xl transition h-full bg-white">
           <div className="flex justify-between items-center">
             <p className="font-bold text-lg">{name}</p>
-            <Difficulty difficulty={4} />
+            <Difficulty difficulty={workload} />
           </div>
-          <p className="mt-2 text-sm text-gray-600">
-            {truncateDetails(details, 10)}
+          <p className="mt-2 text-sm text-start over text-gray-600">
+            {truncateDetails(details, 60)}
           </p>
           <div className="mt-10 flex justify-end">{getSvg(tag)}</div>
         </div>

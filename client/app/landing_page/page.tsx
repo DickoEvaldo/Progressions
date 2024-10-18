@@ -29,7 +29,10 @@ const Page = () => {
             Navigate Your Degree with Tailored Course Roadmaps, Skill Tracking,
             and Career Insights
           </p>
-          <Button className="bg-light-button self-start font-bold rounded-2xl text-xl">
+          <Button
+            onClick={() => router.push("/login")}
+            className="bg-light-button self-start font-bold rounded-2xl text-xl"
+          >
             Get Started Now
           </Button>
         </div>

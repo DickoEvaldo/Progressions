@@ -1,219 +1,303 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import CourseCardMd from "../components/self/CourseCardMd";
 import CourseCardSm from "../components/self/CourseCardSm";
 import CoursesPerYear from "../components/self/CoursesPerYear";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProgressBar from "../components/self/ProgressBar"; // Import ProgressBar
+import axios from "axios";
+import { userStore } from "../zustand/userStore";
 
 const Page = () => {
+  const { token, name } = userStore();
+  const [courseData, setCourseData] = useState();
+  console.log(token);
+
   type Button = {
     id: number;
     name: string;
     highlight: boolean;
   };
+  const formatCourseData = (courseData) => {
+    const coursesThisYear = {
+      termOne: [],
+      termTwo: [],
+      termThree: [],
+    };
 
-  const placeholderDetails =
-    "An introduction to problem-solving via programming, which aims to have students develop proficiency in using a high level programming language. Topics: algorithms, program structures (statements, sequence, selection, iteration, functions), data types (numeric, character), data structures (arrays, tuples, pointers, lists), storage structures (memory, addresses), introduction to analysis of algorithms, testing, code quality, teamwork, and reflective practice. The course includes extensive practical work in labs and programming projects.";
+    const getDifficulty = (difficultyLevel) => {
+      switch (difficultyLevel) {
+        case 1:
+          return "easy";
+        case 2:
+          return "medium";
+        case 3:
+          return "hard";
+        default:
+          return "medium";
+      }
+    };
 
-  const coursesThisYear = {
-    termOne: [
-      {
-        name: "COMP3121",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "algos",
-        year: 1,
-      },
-      {
-        name: "COMP6841",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "cyber",
-        year: 1,
-      },
-      {
-        name: "CDEV3000",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "gened",
-        year: 1,
-      },
-      {
-        name: "COMP2011",
-        difficulty: "medium",
-        details: placeholderDetails,
-        tag: "datastructures",
-        year: 2,
-      },
-      {
-        name: "COMP2021",
-        difficulty: "medium",
-        details: placeholderDetails,
-        tag: "theory",
-        year: 2,
-      },
-      {
-        name: "MATH2501",
-        difficulty: "medium",
-        details: placeholderDetails,
-        tag: "math",
-        year: 2,
-      },
-      {
-        name: "COMP3011",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "AI",
-        year: 3,
-      },
-      {
-        name: "COMP3021",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "ML",
-        year: 3,
-      },
-      {
-        name: "COMP3501",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "networks",
-        year: 3,
-      },
-    ],
-    termTwo: [
-      {
-        name: "COMP3121",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "algos",
-        year: 1,
-      },
-      {
-        name: "COMP6841",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "cyber",
-        year: 1,
-      },
-      {
-        name: "CDEV3000",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "gened",
-        year: 1,
-      },
-      {
-        name: "COMP2012",
-        difficulty: "medium",
-        details: placeholderDetails,
-        tag: "webdev",
-        year: 2,
-      },
-      {
-        name: "COMP2022",
-        difficulty: "medium",
-        details: placeholderDetails,
-        tag: "OOP",
-        year: 2,
-      },
-      {
-        name: "MATH2502",
-        difficulty: "medium",
-        details: placeholderDetails,
-        tag: "math",
-        year: 2,
-      },
-      {
-        name: "COMP3012",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "security",
-        year: 3,
-      },
-      {
-        name: "COMP3022",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "NLP",
-        year: 3,
-      },
-      {
-        name: "COMP3502",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "networks",
-        year: 3,
-      },
-    ],
-    termThree: [
-      {
-        name: "COMP3121",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "algos",
-        year: 1,
-      },
-      {
-        name: "COMP6841",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "cyber",
-        year: 1,
-      },
-      {
-        name: "CDEV3000",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "gened",
-        year: 1,
-      },
-      {
-        name: "COMP2013",
-        difficulty: "medium",
-        details: placeholderDetails,
-        tag: "database",
-        year: 2,
-      },
-      {
-        name: "COMP2023",
-        difficulty: "medium",
-        details: placeholderDetails,
-        tag: "OS",
-        year: 2,
-      },
-      {
-        name: "MATH2503",
-        difficulty: "medium",
-        details: placeholderDetails,
-        tag: "math",
-        year: 2,
-      },
-      {
-        name: "COMP3013",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "cloud",
-        year: 3,
-      },
-      {
-        name: "COMP3023",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "bigdata",
-        year: 3,
-      },
-      {
-        name: "COMP3503",
-        difficulty: "hard",
-        details: placeholderDetails,
-        tag: "networks",
-        year: 3,
-      },
-    ],
+    const getTag = (courseName) => {
+      // This is a simplified tag generation.
+      // You might want to create a more sophisticated mapping based on course codes or names.
+      const prefix = courseName.slice(0, 4).toLowerCase();
+      switch (prefix) {
+        case "comp":
+          return "computer";
+        case "math":
+          return "math";
+        case "cdev":
+          return "gened";
+        default:
+          return "misc";
+      }
+    };
+
+    courseData.forEach((yearCourses, yearNum) => {
+      yearCourses.forEach((courseArray, termIndex) => {
+        const termKey = `term${["One", "Two", "Three"][termIndex]}`;
+
+        courseArray.forEach((course) => {
+          const formattedCourse = {
+            name: course.course_code.toUpperCase(),
+            difficulty: getDifficulty(course.difficulty),
+            details: course.details,
+            tag: getTag(course.name),
+            workload: course.difficulty,
+            year: yearNum + 1, // Assuming course codes like COMP1511, MATH1131, etc.
+          };
+
+          coursesThisYear[termKey].push(formattedCourse);
+        });
+      });
+    });
+
+    return coursesThisYear;
   };
+
+  // Usage in your component
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get(
+          "http://10.147.20.154:3000/getRoadMap",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("====================================");
+        console.log(response);
+        console.log("====================================");
+        const formattedData = formatCourseData(response.data);
+        setCourseData(formattedData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCourses();
+  }, []);
+  // const coursesThisYear = {
+  //   termOne: [
+  //     {
+  //       name: "COMP3121",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "algos",
+  //       year: 1,
+  //     },
+  //     {
+  //       name: "COMP6841",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "cyber",
+  //       year: 1,
+  //     },
+  //     {
+  //       name: "CDEV3000",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "gened",
+  //       year: 1,
+  //     },
+  //     {
+  //       name: "COMP2011",
+  //       difficulty: "medium",
+  //       details: placeholderDetails,
+  //       tag: "datastructures",
+  //       year: 2,
+  //     },
+  //     {
+  //       name: "COMP2021",
+  //       difficulty: "medium",
+  //       details: placeholderDetails,
+  //       tag: "theory",
+  //       year: 2,
+  //     },
+  //     {
+  //       name: "MATH2501",
+  //       difficulty: "medium",
+  //       details: placeholderDetails,
+  //       tag: "math",
+  //       year: 2,
+  //     },
+  //     {
+  //       name: "COMP3011",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "AI",
+  //       year: 3,
+  //     },
+  //     {
+  //       name: "COMP3021",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "ML",
+  //       year: 3,
+  //     },
+  //     {
+  //       name: "COMP3501",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "networks",
+  //       year: 3,
+  //     },
+  //   ],
+  //   termTwo: [
+  //     {
+  //       name: "COMP3121",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "algos",
+  //       year: 1,
+  //     },
+  //     {
+  //       name: "COMP6841",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "cyber",
+  //       year: 1,
+  //     },
+  //     {
+  //       name: "CDEV3000",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "gened",
+  //       year: 1,
+  //     },
+  //     {
+  //       name: "COMP2012",
+  //       difficulty: "medium",
+  //       details: placeholderDetails,
+  //       tag: "webdev",
+  //       year: 2,
+  //     },
+  //     {
+  //       name: "COMP2022",
+  //       difficulty: "medium",
+  //       details: placeholderDetails,
+  //       tag: "OOP",
+  //       year: 2,
+  //     },
+  //     {
+  //       name: "MATH2502",
+  //       difficulty: "medium",
+  //       details: placeholderDetails,
+  //       tag: "math",
+  //       year: 2,
+  //     },
+  //     {
+  //       name: "COMP3012",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "security",
+  //       year: 3,
+  //     },
+  //     {
+  //       name: "COMP3022",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "NLP",
+  //       year: 3,
+  //     },
+  //     {
+  //       name: "COMP3502",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "networks",
+  //       year: 3,
+  //     },
+  //   ],
+  //   termThree: [
+  //     {
+  //       name: "COMP3121",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "algos",
+  //       year: 1,
+  //     },
+  //     {
+  //       name: "COMP6841",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "cyber",
+  //       year: 1,
+  //     },
+  //     {
+  //       name: "CDEV3000",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "gened",
+  //       year: 1,
+  //     },
+  //     {
+  //       name: "COMP2013",
+  //       difficulty: "medium",
+  //       details: placeholderDetails,
+  //       tag: "database",
+  //       year: 2,
+  //     },
+  //     {
+  //       name: "COMP2023",
+  //       difficulty: "medium",
+  //       details: placeholderDetails,
+  //       tag: "OS",
+  //       year: 2,
+  //     },
+  //     {
+  //       name: "MATH2503",
+  //       difficulty: "medium",
+  //       details: placeholderDetails,
+  //       tag: "math",
+  //       year: 2,
+  //     },
+  //     {
+  //       name: "COMP3013",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "cloud",
+  //       year: 3,
+  //     },
+  //     {
+  //       name: "COMP3023",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "bigdata",
+  //       year: 3,
+  //     },
+  //     {
+  //       name: "COMP3503",
+  //       difficulty: "hard",
+  //       details: placeholderDetails,
+  //       tag: "networks",
+  //       year: 3,
+  //     },
+  //   ],
+  // };
 
   const [buttons, setButtons] = useState<Button[]>([
     { id: 0, name: "All", highlight: true },
@@ -259,7 +343,7 @@ const Page = () => {
     <div className="flex flex-col min-h-screen">
       <div className="flex flex-col gap-4 mt-8 px-8">
         <div className="flex w-full items-center gap-4">
-          <p>Welcome Back, Dicko!</p>
+          <p>Welcome Back, {name}</p>
           <div className="flex items-center justify-end w-full gap-2">
             <div className="w-[85%] justify-self-end self-end">
               <ProgressBar progress={progress} />
@@ -307,11 +391,13 @@ const Page = () => {
               pauseOnHover
               theme="colored"
             />
-            <CoursesPerYear
-              coursesThisYear={coursesThisYear}
-              selectedYear={selectedYear}
-              onProgressUpdate={handleProgressUpdate} // Pass callback to update progress
-            />
+            {courseData && (
+              <CoursesPerYear
+                coursesThisYear={courseData}
+                selectedYear={selectedYear}
+                onProgressUpdate={handleProgressUpdate} // Pass callback to update progress
+              />
+            )}
           </div>
         </div>
       </div>
