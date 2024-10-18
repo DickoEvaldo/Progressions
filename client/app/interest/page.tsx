@@ -71,7 +71,7 @@ const Page = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-center text-5xl font-bold mb-12">
-        Choose Your <span className="text-[#3fc1fd]">Interest</span>
+        Choose Your <span className="text-[#3fc1fd]">Minor</span>
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -100,15 +100,21 @@ const Page = () => {
       <div className="flex justify-center mt-12 space-x-7">
         <Button
           onClick={() => router.push("/pathways")}
-          className="text-md font-[525] bg-white border-solid border-[1.5px] border-[#3fc1fd] text-[#3fc1fd] px-14 py-5 rounded-[10px]"
+          className="text-md font-[525] bg-white border-solid border-[1.5px] border-[#3fc1fd] text-[#3fc1fd] px-14 py-5 rounded-[10px] hover:text-white"
         >
           Back
         </Button>
         <Button
           onClick={() => router.push("/dashboard")}
-          className="text-md font-[525] bg-light-button border-[1.5px] border-[#3fc1fd] text-white px-8 py-5 rounded-[10px]"
+          className="text-md font-[525] bg-light-button border-[1.5px] border-[#3fc1fd] text-white px-8 py-5 rounded-[10px] hover:text-[#3fc1fd]"
         >
           Start Course
+        </Button>
+        <Button
+          onClick={() => router.push("/dashboard")}
+          className="text-md font-[525] bg-gray-300 border-[1.5px] border-gray-300 text-gray-700 px-8 py-5 rounded-[10px] hover:text-white"
+        >
+          Skip for now
         </Button>
       </div>
     </div>
