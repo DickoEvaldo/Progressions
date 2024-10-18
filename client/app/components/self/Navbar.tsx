@@ -24,7 +24,10 @@ const Navbar = () => {
             Dashboard
           </Link>
           <Link href="/roadmap" className="hover:underline">
-            Roadmap
+            Community Roadmaps
+          </Link>
+          <Link href="/learning" className="hover:underline">
+            Recommended Learnings
           </Link>
         </div>
 
