@@ -1,86 +1,74 @@
-import { Course, CourseDetails, PreReq } from "../interfaces";
 import { connection } from "./database";
 
-export const getCourses = async (courseId: string): Promise<Course[]> => {
-  return new Promise((resolve, reject) => {
-    connection.query<Course[]>(
-      "SELECT * FROM Courses",
-      [courseId],
-      (err, res) => {
-        if (err) reject(err)
-        else resolve(res)
-      }
-    )
-  })
+type Course = {
+  code: string,
+  name: string,
+  description: string,
+  terms: string[],
+  preReqs: string[]
 }
 
-export const getCourse = async (courseId: string): Promise<Course> => {
-  return new Promise((resolve, reject) => {
-    connection.query<Course[]>(
-      "SELECT * FROM Courses WHERE courseId = ?",
-      [courseId],
-      (err, res) => {
-        if (err) reject(err)
-        else resolve(res?.[0])
+function formatCourse(records: any[]) {
+  let courses: Course[] = []
+  for (let record of records) {
+    if (courses.find(course => course.code === record.courseId)) {
+      let course = courses.find(course => course.code === record.courseId)!
+      course.terms.push(record.Term)
+      if (record.preReq) {
+        course.preReqs.push(record.preReq)
       }
-    )
-  })
-}
-
-export const getCourseDetails = async (courseId: string): Promise<CourseDetails> => {
-  const course: Course = await getCourse(courseId);
-  const courseDets: CourseDetails = {
-    courseId: course.courseId,
-    code: course.code,
-    name: course.name,
-    year: course.year,
-    term: course.term,
-    details: course.details,
-    preReqs: await getPreReqs(courseId),
-    reqFor: await getReqs(courseId),
+      course.terms = Array.from(new Set(course.terms))
+      course.preReqs = Array.from(new Set(course.preReqs))
+    } else {
+      let course: Course = {
+        code: record.courseId,
+        name: record.name,
+        description: record.details,
+        terms: [record.Term],
+        preReqs: record.preReq ? [record.preReq] : []
+      }
+      courses.push(course)
+    }
   }
-  return courseDets
+  return courses
 }
 
-export const getPreReqs = async (courseId: string): Promise<string[]> => {
-  const preReqPacket: PreReq[] = await new Promise((resolve, reject) => {
-    connection.query<PreReq[]>(
-      "SELECT * FROM PreReqs WHERE courseId = ?",
-      [courseId],
-      (err, res) => {
-        if (err) reject(err)
-        else resolve(res)
-      }
-    )
-  })
-  const preReqs: string[] = preReqPacket.map((preReq) => preReq.preReq);
-  return preReqs;
-}
-
-export const getReqs = async (courseId: string): Promise<string[]> => {
-  const preReqPacket: PreReq[] = await new Promise((resolve, reject) => {
-    connection.query<PreReq[]>(
-      "SELECT * FROM PreReqs WHERE preReq = ?",
-      [courseId],
-      (err, res) => {
-        if (err) reject(err)
-        else resolve(res)
-      }
-    )
-  })
-  const courses: string[] = preReqPacket.map((preReq) => preReq.courseId);
-  return courses;
-}
-
-export const getCompletedCourses = async (userId: string): Promise<string[]> => {
+export function getCompulsoryCoursesByPathway(pathwayId: string): Promise<Course[]> {
   return new Promise((resolve, reject) => {
     connection.query<any[]>(
-      "SELECT course FROM CompletedCourses WHERE id = ?",
-      [userId],
+      "SELECT C.courseId as courseId, Term, details, preReq,name  from Compulsory \
+        join Courses C on Compulsory.courseId = C.courseId \
+        join CourseTerms on C.courseId = CourseTerms.courseId \
+        left join PreReqs on C.courseId = PreReqs.courseId \
+        where Compulsory.pathway = ?;",
+      [pathwayId],
       (err, res) => {
         if (err) reject(err)
-        else resolve(res)
+        else {
+          resolve(formatCourse(res))
+        }
       }
     )
   })
 }
+
+
+export function getRecommendedCoursesByPathway(pathwayId: string): Promise<Course[]> {
+  return new Promise((resolve, reject) => {
+    connection.query<any[]>(
+      "SELECT C.courseId as courseId, Term, details, preReq,name  from Recommended \
+        join Courses C on Recommended.courseId = C.courseId \
+        join CourseTerms on C.courseId = CourseTerms.courseId \
+        left join PreReqs on C.courseId = PreReqs.courseId \
+        where Recommended.pathway = ?;",
+      [pathwayId],
+      (err, res) => {
+        if (err) reject(err)
+        else {
+          resolve(formatCourse(res))
+        }
+      }
+    )
+  })
+}
+
