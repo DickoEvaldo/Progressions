@@ -16,7 +16,8 @@ const Navbar = () => {
         </Link>
         <div className="flex gap-8 text-sm cursor-pointer">
           <Link href={"/dashboard"}>Dashboard</Link>
-          <Link href={"/roadmap"}>Roadmap</Link>
+          <Link href={"/roadmap"}>Community Roadmaps</Link>
+          <Link href={"/learning"}>Recommended Learning</Link>
         </div>
         <div className="flex gap-4 ml-auto">
           <Link
