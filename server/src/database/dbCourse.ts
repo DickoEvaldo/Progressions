@@ -5,7 +5,8 @@ type Course = {
   name: string,
   description: string,
   terms: string[],
-  preReqs: string[]
+  preReqs: string[],
+  difficulty: number
 }
 
 function formatCourse(records: any[]) {
@@ -25,7 +26,8 @@ function formatCourse(records: any[]) {
         name: record.name,
         description: record.details,
         terms: [record.Term],
-        preReqs: record.preReq ? [record.preReq] : []
+        preReqs: record.preReq ? [record.preReq] : [],
+        difficulty: record.difficulty
       }
       courses.push(course)
     }
@@ -36,7 +38,7 @@ function formatCourse(records: any[]) {
 export function getCompulsoryCoursesByPathway(pathwayId: string): Promise<Course[]> {
   return new Promise((resolve, reject) => {
     connection.query<any[]>(
-      "SELECT C.courseId as courseId, Term, details, preReq,name  from Compulsory \
+      "SELECT C.courseId as courseId, Term, details, preReq,name, difficulty from Compulsory \
         join Courses C on Compulsory.courseId = C.courseId \
         join CourseTerms on C.courseId = CourseTerms.courseId \
         left join PreReqs on C.courseId = PreReqs.courseId \
@@ -56,7 +58,7 @@ export function getCompulsoryCoursesByPathway(pathwayId: string): Promise<Course
 export function getRecommendedCoursesByPathway(pathwayId: string): Promise<Course[]> {
   return new Promise((resolve, reject) => {
     connection.query<any[]>(
-      "SELECT C.courseId as courseId, Term, details, preReq,name  from Recommended \
+      "SELECT C.courseId as courseId, Term, details, preReq,name, difficulty  from Recommended \
         join Courses C on Recommended.courseId = C.courseId \
         join CourseTerms on C.courseId = CourseTerms.courseId \
         left join PreReqs on C.courseId = PreReqs.courseId \
@@ -72,3 +74,41 @@ export function getRecommendedCoursesByPathway(pathwayId: string): Promise<Cours
   })
 }
 
+export function setCompletedCourse(courseId: string, userId: string, value: boolean): Promise<any> {
+  return new Promise((resolve, reject) => {
+    if (value) {
+      connection.query(
+        "INSERT INTO CompletedCourses (course, userId) VALUES(?,?)",
+        [courseId, userId],
+        (err, res : any) => {
+          if (err) reject(err)
+          else resolve(res?.[0])
+        }
+      )
+    }else{
+      connection.query(
+        "DELETE FROM CompletedCourses WHERE course = ? AND userId = ?",
+        [courseId, userId],
+        (err, res : any) => {
+          if (err) reject(err)
+          else resolve(res?.[0])
+        }
+      )
+    }
+  })
+}
+
+export function getCompletedCourses(userId: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    connection.query<any[]>(
+      "SELECT course from CompletedCourses where userId = ?;",
+      [userId],
+      (err, res) => {
+        if (err) reject(err)
+        else {
+          resolve(res.map(record => record.course))
+        }
+      }
+    )
+  })
+}

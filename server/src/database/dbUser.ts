@@ -28,8 +28,8 @@ export const getUser = async (userId: string): Promise<User> => {
 export const createUser = async (user: User, password: string): Promise<User> => {
   return new Promise((resolve, reject) => {
     connection.query<any[]>(
-      "INSERT INTO Users (name, email, password, program, interest) VALUES(?,?,?,?,?)",
-      [user.name, user.email, password, user.program, user.interest],
+      "INSERT INTO Users (id, name, email, password, program, interest) VALUES(?,?,?,?,?,?)",
+      [user.id, user.name, user.email, password, user.program, user.interest],
       (err, res) => {
         if (err) reject(err)
         else resolve(res?.[0])
