@@ -1,8 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import CourseCardMd from "../components/self/CourseCardMd";
 import CourseCardSm from "../components/self/CourseCardSm";
 import CoursesPerYear from "../components/self/CoursesPerYear";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ProgressBar from "../components/self/ProgressBar"; // Import ProgressBar
 
 const Page = () => {
   type Button = {
@@ -10,10 +13,10 @@ const Page = () => {
     name: string;
     highlight: boolean;
   };
+
   const placeholderDetails =
     "An introduction to problem-solving via programming, which aims to have students develop proficiency in using a high level programming language. Topics: algorithms, program structures (statements, sequence, selection, iteration, functions), data types (numeric, character), data structures (arrays, tuples, pointers, lists), storage structures (memory, addresses), introduction to analysis of algorithms, testing, code quality, teamwork, and reflective practice. The course includes extensive practical work in labs and programming projects.";
 
-  // Courses with year property
   const coursesThisYear = {
     termOne: [
       {
@@ -220,6 +223,7 @@ const Page = () => {
   ]);
 
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [progress, setProgress] = useState<number>(0); // Track progress as a percentage
 
   const handleButtonClick = (buttonId: number) => {
     setButtons((prevButtons) =>
@@ -229,6 +233,10 @@ const Page = () => {
       }))
     );
     setSelectedYear(buttonId === 0 ? null : buttonId); // null for "All"
+  };
+
+  const handleProgressUpdate = (newProgress: number) => {
+    setProgress(newProgress);
   };
 
   const renderButton = (button: Button) => {
@@ -250,7 +258,15 @@ const Page = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex flex-col gap-4 mt-8 px-8">
-        <p>Welcome Back, Dicko!</p>
+        <div className="flex w-full items-center gap-4">
+          <p>Welcome Back, Dicko!</p>
+          <div className="flex items-center justify-end w-full gap-2">
+            <div className="w-[85%] justify-self-end self-end">
+              <ProgressBar progress={progress} />
+            </div>
+            {/* <span className="text-sm">{progress}% completed</span> */}
+          </div>
+        </div>
         <h1 className="text-3xl text-dark-text">3778 - Computer Science</h1>
       </div>
       <div
@@ -279,9 +295,22 @@ const Page = () => {
             <div className="flex flex-row gap-4 justify-center text-md">
               {buttons.map((button) => renderButton(button))}
             </div>
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="colored"
+            />
             <CoursesPerYear
               coursesThisYear={coursesThisYear}
               selectedYear={selectedYear}
+              onProgressUpdate={handleProgressUpdate} // Pass callback to update progress
             />
           </div>
         </div>
